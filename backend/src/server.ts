@@ -5,6 +5,7 @@ import authRoute from "./routes/authRoutes";
 import adminRoute from "./routes/adminRoutes";
 import managerRoute from "./routes/managerRoutes";
 import userRoute from "./routes/userRoutes";
+import { errorHandler, notFound } from "./middlewares/errorHandlerMiddleware";
 
 const PORT = process.env.PORT || 5000;
 
@@ -22,5 +23,8 @@ app.use("/api/v1/user", userRoute);
 app.get("/", (req, res) => {
 	res.json("server is running..");
 });
+
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
