@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     BigInt        @id @default(autoincrement())
+  username               String        @unique
+  password               String
+  role                   Roles         @default(user)
+  locAndTime             LocAndTime[]
+  weathers               Weather[]
+  createdAt              DateTime      @default(now())
+}
+
+model LocAndTime {
+  id                     BigInt        @id @default(autoincrement())
+  latitude               Float
+  longitude              Float
+  elevation              Int
+  utc_offset_seconds     BigInt
+  timezone               String
+  timezone_abbreviation  String
+  weathers               Weather[]
+  userId                 BigInt
+  user                   User          @relation(fields: [userId], references: [id])
+  createdAt              DateTime      @default(now()) 
+}
+
+model Weather {
+  id                            BigInt        @id @default(autoincrement())
+  time                          String?
+  weather_code                  Int?
+  temperature_2m_max            Float?
+  temperature_2m_min            Float?
+  temperature_2m_mean           Float?
+  apparent_temperature_max      Float?
+  apparent_temperature_min      Float?
+  apparent_temperature_mean     Float?
+  sunrise                       DateTime?
+  sunset                        DateTime?
+  daylight_duration             Float?
+  sunshine_duration             Float?
+  precipitation_sum             Float?
+  rain_sum                      Float?
+  snowfall_sum                  Float?
+  precipitation_hours           Int?
+  wind_speed_10m_max            Float?
+  wind_gusts_10m_max            Float?
+  wind_direction_10m_dominant   Int?
+  shortwave_radiation_sum       Float?
+  et0_fao_evapotranspiration    Float?
+  locAndTimeId                  BigInt
+  locAndTime                    LocAndTime    @relation(fields: [locAndTimeId], references: [id])
+  userId                        BigInt
+  user                          User          @relation(fields: [userId], references: [id])
+}
+
+enum Roles {
+  admin
+  manager
+  user
+}
